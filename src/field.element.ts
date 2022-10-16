@@ -1,6 +1,7 @@
 import { power } from "../utils/power";
+import { IFieldElement } from "./interface/field.element.interface";
 
-export class FieldElement {
+export class FieldElement implements IFieldElement {
   readonly num: number;
   readonly prime: number;
 
