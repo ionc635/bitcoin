@@ -18,7 +18,7 @@ export class Point implements IPoint {
 
     if (
       (this.y as number) ** 2 !==
-      (this.x as number) ** 3 + a * (x as number) + b
+      (this.x as number) ** 3 + a * (this.x as number) + b
     ) {
       throw new Error(`(${x}, ${y}) is not on the curve`);
     }
