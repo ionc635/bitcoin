@@ -6,16 +6,12 @@ export class FieldElement implements IFieldElement {
   readonly prime: number;
 
   constructor(num: number, prime: number) {
-    this.num = num;
-    this.prime = prime;
-
     if (num >= prime || num < 0) {
       throw new Error(`Num ${num} not in field range 0 to ${prime - 1}`);
     }
 
-    // if (!this.isPrime(prime)) {
-    //   throw new Error(`${prime} is not prime `)
-    // }
+    this.num = num;
+    this.prime = prime;
   }
 
   add(other: FieldElement) {
