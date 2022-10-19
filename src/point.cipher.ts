@@ -1,20 +1,8 @@
 import { power } from './../utils/power';
+import { FieldElement } from './field.element';
+import { IPointForFieldElement } from './interface/point.cipher';
 
-export class FieldElement {
-  readonly num: number;
-  readonly prime: number;
-
-  constructor(num: number, prime: number) {
-    this.num = num;
-    this.prime = prime;
-
-    if (num >= prime || num < 0) {
-      throw new Error(`Num ${num} not in field range 0 to ${prime - 1}`);
-    }
-  }
-}
-
-export class Point {
+export class PointForFieldElement implements IPointForFieldElement {
   readonly x: number | null;
   readonly y: number | null;
   readonly a: number;
@@ -27,15 +15,15 @@ export class Point {
     a: FieldElement,
     b: FieldElement
   ) {
+    if (x?.prime !== y?.prime || a.prime !== b.prime || x?.prime !== a.prime) {
+      throw new Error("they aren't on the same prime");
+    }
+
     this.x = typeof x?.num === 'number' ? x.num : null;
     this.y = typeof y?.num === 'number' ? y.num : null;
     this.a = a.num;
     this.b = b.num;
     this.prime = a.prime;
-
-    if (x?.prime !== y?.prime || a.prime !== b.prime) {
-      throw new Error("they aren't on the same prime");
-    }
 
     if (this.x === null || this.y === null) {
       return;
@@ -49,7 +37,7 @@ export class Point {
     }
   }
 
-  add(other: Point) {
+  add(other: PointForFieldElement) {
     if (this.a !== other.a || this.b !== other.b) {
       throw new Error(`Points ${this}, ${other} are not on the same curve`);
     }
@@ -65,28 +53,35 @@ export class Point {
 
     // 역원
     if (this.x === other.x && this.y !== other.y) {
-      const fieldElementA = new FieldElement(this.a, this.prime);
-      const fieldElementB = new FieldElement(this.b, this.prime);
+      const a = new FieldElement(this.a, this.prime);
+      const b = new FieldElement(this.b, this.prime);
 
-      return new Point(null, null, fieldElementA, fieldElementB);
+      return new PointForFieldElement(null, null, a, b);
     }
 
     // P1 == P
     if (this.equal(other)) {
-      const s = (3 * this.x ** 2 + this.a) / (2 * this.y);
-      const x = s ** 2 - 2 * this.x;
-      const y = s * (this.x - x) - this.y;
+      const s = new FieldElement(3, this.prime)
+        .mul(new FieldElement(this.x, this.prime).pow(2))
+        .add(new FieldElement(this.a, this.prime))
+        .div(
+          new FieldElement(2, this.prime).mul(
+            new FieldElement(this.y, this.prime)
+          )
+        );
+      const x = s
+        .pow(2)
+        .sub(new FieldElement(2, this.prime))
+        .mul(new FieldElement(this.x, this.prime));
+      const y = s
+        .mul(new FieldElement(this.x, this.prime).sub(x))
+        .sub(new FieldElement(this.y, this.prime));
 
-      const fieldElementX = new FieldElement(x, this.prime);
-      const fieldElementY = new FieldElement(y, this.prime);
-      const fieldElementA = new FieldElement(this.a, this.prime);
-      const fieldElementB = new FieldElement(this.a, this.prime);
-
-      return new Point(
-        fieldElementX,
-        fieldElementY,
-        fieldElementA,
-        fieldElementB
+      return new PointForFieldElement(
+        x,
+        y,
+        new FieldElement(this.a, this.prime),
+        new FieldElement(this.b, this.prime)
       );
     }
 
@@ -95,28 +90,36 @@ export class Point {
       const a = new FieldElement(this.a, this.prime);
       const b = new FieldElement(this.a, this.prime);
 
-      return new Point(null, null, a, b);
+      return new PointForFieldElement(null, null, a, b);
     }
 
     // x1 != x2
-    const s = (other.y - this.y) / (other.x - this.x);
-    const x = s ** 2 - this.x - other.x;
-    const y = s * (this.x - x) - this.y;
+    if (this.x != other.x) {
+      const s = new FieldElement(other.y, this.prime)
+        .sub(new FieldElement(this.y, this.prime))
+        .div(
+          new FieldElement(other.x, this.prime).sub(
+            new FieldElement(this.x, this.prime)
+          )
+        );
+      const x = s
+        .pow(2)
+        .sub(new FieldElement(this.x, this.prime))
+        .sub(new FieldElement(other.x, this.prime));
+      const y = s
+        .mul(new FieldElement(this.x, this.prime).sub(x))
+        .sub(new FieldElement(this.y, this.prime));
 
-    const fieldElementX = new FieldElement(x, this.prime);
-    const fieldElementY = new FieldElement(y, this.prime);
-    const fieldElementA = new FieldElement(this.a, this.prime);
-    const fieldElementB = new FieldElement(this.b, this.prime);
-
-    return new Point(
-      fieldElementX,
-      fieldElementY,
-      fieldElementA,
-      fieldElementB
-    );
+      return new PointForFieldElement(
+        x,
+        y,
+        new FieldElement(this.a, this.prime),
+        new FieldElement(this.b, this.prime)
+      );
+    }
   }
 
-  equal(other: Point) {
+  equal(other: PointForFieldElement) {
     return (
       this.x === other.x &&
       this.y === other.y &&

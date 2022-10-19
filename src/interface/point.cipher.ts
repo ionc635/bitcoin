@@ -1,6 +1,6 @@
-import { Point } from "../point.cipher";
+import { PointForFieldElement } from "../point.cipher";
 
-export interface IPoint {
-  add(other: Point): void;
-  equal(other: Point): boolean;
+export interface IPointForFieldElement {
+  add(other: PointForFieldElement): void;
+  equal(other: PointForFieldElement): boolean;
 }
