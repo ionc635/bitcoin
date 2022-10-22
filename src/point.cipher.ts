@@ -15,7 +15,7 @@ export class PointForFieldElement implements IPointForFieldElement {
     a: FieldElement,
     b: FieldElement
   ) {
-    if (x?.prime !== y?.prime || a.prime !== b.prime || x?.prime !== a.prime) {
+    if (x?.prime !== y?.prime || a.prime !== b.prime) {
       throw new Error("they aren't on the same prime");
     }
 
@@ -59,7 +59,7 @@ export class PointForFieldElement implements IPointForFieldElement {
       return new PointForFieldElement(null, null, a, b);
     }
 
-    // P1 == P
+    // P1 == P2
     if (this.equal(other)) {
       const s = new FieldElement(3, this.prime)
         .mul(new FieldElement(this.x, this.prime).pow(2))
@@ -71,8 +71,11 @@ export class PointForFieldElement implements IPointForFieldElement {
         );
       const x = s
         .pow(2)
-        .sub(new FieldElement(2, this.prime))
-        .mul(new FieldElement(this.x, this.prime));
+        .sub(
+          new FieldElement(2, this.prime).mul(
+            new FieldElement(this.x, this.prime)
+          )
+        );
       const y = s
         .mul(new FieldElement(this.x, this.prime).sub(x))
         .sub(new FieldElement(this.y, this.prime));
@@ -117,6 +120,25 @@ export class PointForFieldElement implements IPointForFieldElement {
         new FieldElement(this.b, this.prime)
       );
     }
+  }
+
+  rmul(coefficient: number) {
+    let coef = coefficient;
+
+    const a = new FieldElement(this.a, this.prime);
+    const b = new FieldElement(this.b, this.prime);
+
+    let current = this as PointForFieldElement;
+    let result = new PointForFieldElement(null, null, a, b);
+
+    while (coef) {
+      if (coef & 1) {
+        result = result.add(current) as PointForFieldElement;
+      }
+      current = current.add(current) as PointForFieldElement;
+      coef = Math.floor(coef / 2);
+    }
+    return result;
   }
 
   equal(other: PointForFieldElement) {
