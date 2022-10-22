@@ -101,4 +101,136 @@ describe('타원곡선 암호', () => {
       )
     );
   });
+
+  it('위수 223에서 정의된 곡선 y ** 2 = x ** 3 + 7에서 2 * (192, 105) 스칼라 곱셈은?', () => {
+    const prime = 223;
+    const DEFAULT_X = 192;
+    const DEFAULT_Y = 105;
+
+    const a = new FieldElement(DEFAULT_A, prime);
+    const b = new FieldElement(DEFAULT_B, prime);
+    const x = new FieldElement(DEFAULT_X, prime);
+    const y = new FieldElement(DEFAULT_Y, prime);
+
+    const point = new PointForFieldElement(x, y, a, b);
+
+    const result = point.rmul(2);
+    expect(result).toEqual(
+      new PointForFieldElement(
+        new FieldElement(49, prime),
+        new FieldElement(71, prime),
+        a,
+        b
+      )
+    );
+  });
+
+  it('위수 223에서 정의된 곡선 y ** 2 = x ** 3 + 7에서 2 * (143, 98) 스칼라 곱셈은?', () => {
+    const prime = 223;
+    const DEFAULT_X = 143;
+    const DEFAULT_Y = 98;
+
+    const a = new FieldElement(DEFAULT_A, prime);
+    const b = new FieldElement(DEFAULT_B, prime);
+    const x = new FieldElement(DEFAULT_X, prime);
+    const y = new FieldElement(DEFAULT_Y, prime);
+
+    const point = new PointForFieldElement(x, y, a, b);
+
+    const result = point.rmul(2);
+    expect(result).toEqual(
+      new PointForFieldElement(
+        new FieldElement(64, prime),
+        new FieldElement(168, prime),
+        a,
+        b
+      )
+    );
+  });
+
+  it('위수 223에서 정의된 곡선 y ** 2 = x ** 3 + 7에서 2 * (47, 71) 스칼라 곱셈은?', () => {
+    const prime = 223;
+    const DEFAULT_X = 47;
+    const DEFAULT_Y = 71;
+
+    const a = new FieldElement(DEFAULT_A, prime);
+    const b = new FieldElement(DEFAULT_B, prime);
+    const x = new FieldElement(DEFAULT_X, prime);
+    const y = new FieldElement(DEFAULT_Y, prime);
+
+    const point = new PointForFieldElement(x, y, a, b);
+
+    const result = point.rmul(2);
+    expect(result).toEqual(
+      new PointForFieldElement(
+        new FieldElement(36, prime),
+        new FieldElement(111, prime),
+        a,
+        b
+      )
+    );
+  });
+
+  it('위수 223에서 정의된 곡선 y ** 2 = x ** 3 + 7에서 4 * (47, 71) 스칼라 곱셈은?', () => {
+    const prime = 223;
+    const DEFAULT_X = 47;
+    const DEFAULT_Y = 71;
+
+    const a = new FieldElement(DEFAULT_A, prime);
+    const b = new FieldElement(DEFAULT_B, prime);
+    const x = new FieldElement(DEFAULT_X, prime);
+    const y = new FieldElement(DEFAULT_Y, prime);
+
+    const point = new PointForFieldElement(x, y, a, b);
+
+    const result = point.rmul(4);
+    expect(result).toEqual(
+      new PointForFieldElement(
+        new FieldElement(194, prime),
+        new FieldElement(51, prime),
+        a,
+        b
+      )
+    );
+  });
+
+  it('위수 223에서 정의된 곡선 y ** 2 = x ** 3 + 7에서 8 * (47, 71) 스칼라 곱셈은?', () => {
+    const prime = 223;
+    const DEFAULT_X = 47;
+    const DEFAULT_Y = 71;
+
+    const a = new FieldElement(DEFAULT_A, prime);
+    const b = new FieldElement(DEFAULT_B, prime);
+    const x = new FieldElement(DEFAULT_X, prime);
+    const y = new FieldElement(DEFAULT_Y, prime);
+
+    const point = new PointForFieldElement(x, y, a, b);
+
+    const result = point.rmul(8);
+    expect(result).toEqual(
+      new PointForFieldElement(
+        new FieldElement(116, prime),
+        new FieldElement(55, prime),
+        a,
+        b
+      )
+    );
+  });
+
+  it('위수 223에서 정의된 곡선 y ** 2 = x ** 3 + 7에서 21 * (47, 71) 스칼라 곱셈은?', () => {
+    const prime = 223;
+    const DEFAULT_X = 47;
+    const DEFAULT_Y = 71;
+
+    const a = new FieldElement(DEFAULT_A, prime);
+    const b = new FieldElement(DEFAULT_B, prime);
+    const x = new FieldElement(DEFAULT_X, prime);
+    const y = new FieldElement(DEFAULT_Y, prime);
+
+    const point = new PointForFieldElement(x, y, a, b);
+
+    const result = point.rmul(21);
+
+    expect(result).toEqual(new PointForFieldElement(null, null, a, b));
+  });
 });
